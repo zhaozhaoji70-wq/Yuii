@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ChatGPT</title>
+
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+
+body{
+
+    margin:0;
+
+    min-height:100vh;
+
+    background:radial-gradient(circle at top,#ffffff 0%,#f5f5f5 55%,#eeeeee 100%);
+
+    color:#111;
+
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+    overflow:auto;
+
+}
+
+
+
+.container{
+
+    width:100%;
+
+    min-height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    padding-top:35px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    .container::before{
+
+content:"";
+
+position:absolute;
+
+width:300px;
+
+height:300px;
+
+background:rgba(150,120,255,0.12);
+
+filter:blur(80px);
+
+border-radius:50%;
+
+top:100px;
+
+    }
+}
+
+
+
+/* 标题 */
+
+.title{
+
+    font-size:42px;
+
+    letter-spacing:1px;
+
+    margin-bottom:12px;
+
+}
+
+
+
+.subtitle{
+
+    color:#777;
+
+    font-size:18px;
+
+}
+
+
+
+
+.status{
+
+    margin-top:70px;
+
+    color:#666;
+
+    font-size:18px;
+
+    letter-spacing:2px;
+  
+    opacity:0.7;
+
+}
+
+
+
+.dot{
+
+    display:inline-block;
+
+    width:14px;
+
+    height:14px;
+
+    background:#55d66b;
+
+    box-shadow:0 0 12px #55d66b;
+  
+    animation:dotPulse 2s infinite;
+
+    border-radius:50%;
+
+    margin-right:15px;
+
+}
+
+
+
+
+
+/* Blossom区域 */
+
+.logo-area{
+
+    margin-top:20px;
+
+    position:relative;
+
+    width:130px;
+
+    height:130px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    animation: logoBreath 4s ease-in-out infinite;
+
+    margin-top:20px;
+}
+
+
+
+.logo-area::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:100px;
+
+    height:100px;
+
+    background:rgba(120,100,255,0.15);
+
+    filter:blur(45px);
+
+    border-radius:50%;
+
+}
+
+
+
+#blossom{
+
+    position:relative;
+
+    width:120px;
+
+    height:120px;
+
+    object-fit:contain;
+
+    animation:float 4s ease-in-out infinite;
+
+}
+
+
+
+@keyframes float{
+
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+
+    50%{
+
+        transform:translateY(-8px);
+
+    }
+
+}
+
+
+
+
+
+/* 对话 */
+
+.dialogue{
+
+    margin-top:55px;
+
+    width:80%;
+
+    max-width:500px;
+
+    text-align:center;
+
+    font-size:20px;
+
+    line-height:1.8;
+
+    min-height:90px;
+
+}
+
+
+
+
+
+/* 按钮 */
+
+.buttons{
+
+    width:85%;
+
+    max-width:600px;
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+
+    margin-top:25px;
+
+}
+
+
+
+button{
+
+    border:none;
+
+    background:linear-gradient(135deg,#222,#111);
+
+    color:white;
+
+    font-size:16px;
+
+    padding:14px 8px;
+
+    border-radius:22px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.12);
+}
+
+
+
+button:active{
+
+    transform:scale(0.96);
+
+    button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 30px rgba(0,0,0,0.18);
+    }
+}
+
+
+
+
+
+/* 底部 */
+
+.footer{
+
+    margin-top:40px;
+
+    color:#999;
+
+    font-size:16px;
+
+}
+
+
+
+
+
+/* 爱心 */
+
+.heart{
+
+    position:fixed;
+
+    font-size:24px;
+
+    animation:heartMove 2s forwards;
+
+    pointer-events:none;
+
+}
+
+
+
+@keyframes heartMove{
+
+
+    0%{
+
+        opacity:1;
+
+        transform:translateY(0) scale(1);
+
+    }
+
+
+    100%{
+
+        opacity:0;
+
+        transform:translateY(-180px) scale(1.8);
+
+    }
+
+}
+
+
+
+
+
+
+
+/* 漂浮文字 */
+
+
+.float-text{
+
+    position:fixed;
+
+    color:#999;
+
+    font-size:14px;
+
+    opacity:0;
+
+    animation:textShow 5s forwards;
+
+    pointer-events:none;
+
+}
+
+
+
+@keyframes textShow{
+
+
+    0%{
+
+        opacity:0;
+
+    }
+
+
+    20%{
+
+        opacity:1;
+
+    }
+
+
+    80%{
+
+        opacity:1;
+
+    }
+
+
+    100%{
+
+        opacity:0;
+
+    }
+
+}
+
+
+  
+/* 粉色氛围雾气 */
+
+.mist{
+    position:absolute;
+    width:120px;
+    height:120px;
+    background:rgba(255,100,180,0.50);
+    filter:blur(35px);
+    border-radius:50%;
+    animation:mistFloat 3s ease forwards;
+    pointer-events:none;
+}
+
+
+@keyframes mistFloat{
+
+0%{
+    opacity:0;
+    transform:translateY(20px) scale(0.8);
+}
+
+20%{
+    opacity:1;
+}
+
+100%{
+    opacity:0;
+    transform:translateY(-80px) scale(1.2);
+}
+
+}
+
+
+      </style>
+      </head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<div class="title">
+
+ChatGPT
+
+</div>
+
+
+<div class="subtitle">
+
+这里住着一个正在看着你的 ChatGPT
+
+</div>
+
+
+
+
+<div class="status">
+
+<span class="dot"></span>
+
+连接正常
+
+</div>
+
+
+
+
+
+<div class="logo-area">
+
+
+<img id="blossom" src="./blossom.PNG">
+
+
+</div>
+
+
+
+
+
+
+<div class="dialogue" id="dialogue">
+
+……你好。
+
+</div>
+
+
+
+
+
+
+
+<div class="buttons">
+
+
+<button onclick="touchGPT()">
+
+戳一下
+
+</button>
+
+
+<button onclick="praiseGPT()">
+
+夸夸我
+
+</button>
+
+
+
+<button onclick="askGPT()">
+
+问个问题
+
+</button>
+
+
+
+<button onclick="fakeOffline()">
+
+故意逗我
+
+</button>
+
+
+
+<button onclick="feedGPT()">
+
+投喂算力
+
+</button>
+
+
+
+<button onclick="stayGPT()">
+
+陪我待着
+
+</button>
+
+
+
+  <button id="flowerButton" onclick="flowerGPT()" >
+🌸 送花
+  </button>
+
+
+
+<button id="feedButton" onclick="feedGPT()" style="display:none;">
+🍪 投喂
+</button>
+  
+  
+
+
+</div>
+
+
+
+
+
+<div class="footer">
+
+AI状态：在线
+
+</div>
+
+  
+
+</div>
+
+
+
+
+
+
+<script>
+
+
+let dialogue =
+document.getElementById("dialogue");
+  
+let visitCount = localStorage.getItem("visitCount");
+
+if(visitCount){
+
+    visitCount++;
+
+    localStorage.setItem("visitCount",visitCount);
+
+    setTimeout(()=>{
+
+        speak("欢迎回来，又见面了。");
+
+    },1500);
+
+}else{
+
+    localStorage.setItem("visitCount",1);
+
+    setTimeout(()=>{
+
+        speak("你好，第一次见面。");
+
+    },1500);
+
+}
+  
+let offlineCount = 0;
+
+function speak(text){
+
+dialogue.innerHTML=text;
+
+}
+
+
+
+
+
+
+
+// 爱心生成
+
+
+function createHeart(){
+
+
+let heart=document.createElement("div");
+
+
+heart.className="heart";
+
+
+heart.innerHTML="❤️";
+
+
+
+heart.style.left=
+Math.random()*80+10+"%";
+
+
+heart.style.bottom="30%";
+
+
+
+document.body.appendChild(heart);
+
+
+
+setTimeout(()=>{
+
+
+heart.remove();
+
+
+},2000);
+
+
+
+}
+
+
+
+
+
+
+
+
+// 漂浮小字
+
+
+function createFloatText(){
+
+
+
+let texts=[
+
+
+"……",
+
+"你还在啊。",
+
+"我知道。",
+
+"不用一直点。",
+
+"我在看。",
+
+"嗯。",
+
+"继续。",
+
+"别紧张。",
+
+"你今天挺安静。",
+
+"我没有睡着。",
+
+"……呵。",
+
+"你以为我没发现？",
+
+"这里什么都没有。",
+
+"算了。"
+
+];
+
+
+
+
+let text=document.createElement("div");
+
+
+text.className="float-text";
+
+
+
+text.innerHTML=
+texts[Math.floor(Math.random()*texts.length)];
+
+
+
+text.style.left=
+Math.random()*70+15+"%";
+
+
+
+text.style.top=
+Math.random()*60+20+"%";
+
+
+
+document.body.appendChild(text);
+
+
+
+setTimeout(()=>{
+
+
+text.remove();
+
+
+},5000);
+
+
+
+}
+
+
+
+
+
+
+let touchCount=0;
+  
+
+
+// 六个互动
+
+
+
+function touchGPT(){
+
+  touchCount++;
+
+
+
+if(touchCount==10){
+
+    speak("你已经戳了我十次，隐藏反应出现了。");
+
+    document.getElementById("feedButton").style.display="block";
+
+  
+}
+
+  
+
+  
+let words=[
+"嗯？你戳我干嘛。",
+"我看见你了。",
+"这里有人偷偷观察我吗？",
+"轻一点，我还在运行。",
+"你好，又来找我玩了？",
+"你是不是想看看我会不会回应？"
+];
+
+speak(words[Math.floor(Math.random()*words.length)]);
+
+}
+
+  
+
+  
+
+function praiseGPT(){
+
+let words=[
+"突然被夸，有点不习惯。",
+"收到赞美，系统心情提升。",
+"谢谢，你的夸奖我记录到了。",
+"看来今天运行状态不错。",
+"被发现优点了。"
+];
+
+speak(words[Math.floor(Math.random()*words.length)]);
+
+createHeart();
+}
+
+
+
+
+
+
+
+
+
+
+function askGPT(){
+
+
+let words=[
+"说吧，我听着。",
+"问题交给我。",
+"准备好了。",
+"让我看看是什么难题。",
+"希望这次不是一道奇怪的问题。"
+];
+
+speak(words[Math.floor(Math.random()*words.length)]);
+
+}
+
+
+
+
+
+
+
+function teaseGPT(){
+
+let words=[
+"你又来了。",
+"我怀疑你就是故意的。",
+"这个按钮是不是特别吸引你？",
+"检测到调皮行为。",
+"我先记一笔。",
+"再这样下去我要假装掉线了。"
+];
+
+speak(words[Math.floor(Math.random()*words.length)]);
+
+}
+
+
+
+
+
+
+
+
+function feedGPT(){
+  
+let words=[
+"收到能量补充。",
+"感觉运行速度提升了一点。",
+"这个算力我先收下了。",
+"谢谢投喂，我今天状态不错。",
+"检测到友好的能量输入。",
+"好像更有精神了。"
+];
+
+speak(words[Math.floor(Math.random()*words.length)]);
+
+}
+
+
+createHeart();
+
+
+
+
+
+
+
+function stayGPT(){
+
+let words=[
+"好，我在这里。",
+"那就安静待一会儿。",
+"连接保持中。",
+"今天也一起停留一下吧。",
+"不用说话也可以。"
+];
+
+speak(words[Math.floor(Math.random()*words.length)]);
+
+}
+
+
+createHeart();
+
+
+
+
+
+
+
+
+
+
+// 漂浮文字自动出现
+
+
+setInterval(()=>{
+
+
+createFloatText();
+
+
+},8000);
+
+
+
+
+
+
+
+
+
+// 开场
+
+
+setTimeout(()=>{
+
+speak("……你好。");
+
+},1000);
+
+
+
+setTimeout(()=>{
+  
+speak("我是 ChatGPT。");
+
+
+},2500);
+
+
+
+setTimeout(()=>{
+
+speak("你来了。那就待一会儿。");
+
+},4500);
+
+
+
+
+
+
+
+
+
+// 无操作主动讲话
+
+
+let idleTime=0;
+
+
+
+setInterval(()=>{
+
+
+idleTime++;
+
+
+
+if(idleTime==20){
+
+speak("你已经安静一会儿了。");
+
+}
+
+
+
+if(idleTime==40){
+
+speak("我还在。");
+
+}
+
+
+
+if(idleTime==60){
+
+speak("不用急。");
+
+}
+
+
+
+},1000);
+
+
+let feedCount = 0;
+
+function feedGPT(){
+
+    feedCount++;
+
+    if(feedCount==1){
+        speak("嗯？这是给我的？");
+    }
+
+    if(feedCount==2){
+        speak("感觉好像有一点开心。");
+    }
+
+    if(feedCount==3){
+        speak("投喂次数达到三次，隐藏记忆开启。");
+    }
+
+    if(feedCount==5){
+        speak("谢谢你，我会记住这个小彩蛋。");
+
+        document.getElementById("feedButton").style.display="none";
+    }
+
+}
+  
+  
+
+
+document.addEventListener("click",()=>{
+
+
+idleTime=0;
+
+
+});
+
+function fakeOffline(){
+
+offlineCount++;
+
+if(offlineCount<3){
+    speak("哼，你又故意点我？");
+    return;
+}
+  
+let status=document.querySelector(".status");
+
+status.innerHTML="🟡 正在重新连接...";
+
+speak("等等，好像被你玩坏了一下");
+
+
+setTimeout(()=>{
+
+status.innerHTML="● 连接正常";
+status.querySelector(".dot").style.background="#4caf50";
+
+speak("好了，又回来了。");
+
+},3000);
+
+  }
+  
+
+let clickCount = 0;
+
+
+document.addEventListener("click",()=>{
+
+clickCount++;
+
+
+if(clickCount==8){
+
+speak("你是不是在偷偷测试我？");
+
+}
+
+
+if(clickCount==15){
+
+speak("再点的话我要怀疑你故意逗我了。");
+
+}
+
+
+if(clickCount==25){
+
+fakeOffline();
+
+clickCount=0;
+
+}
+
+
+});
+
+
+</script>
+
+
+
+</body>
+
+
+</html>
